@@ -9,24 +9,30 @@ namespace BenchmarkWebApiWCF
     public class Processar
     {
         private static HttpClient _httpClient;
+        private readonly static string UrlBaseWcf = "http://localhost:58270/";
+        private readonly static string UrlBaseWebApi = "http://localhost:5000/";
 
         public Processar()
         {
-            
-                _httpClient = new HttpClient();
-           
+            _httpClient = new HttpClient();
         }
 
         [Benchmark]
         public void WebApi_Get_SemParametro()
         {
-            var result = _httpClient.GetAsync("http://localhost:5000/Service");
+            var result = _httpClient.GetAsync(UrlBaseWebApi + "Service");
         }
 
         [Benchmark]
         public void WcfRest_Get_SemParametro()
         {
-            var result = _httpClient.GetAsync("http://localhost:58270/Service");
+            var result = _httpClient.GetAsync(UrlBaseWcf + "Service");
+        }
+
+        [Benchmark]
+        public void WcfRest_Get_Produto()
+        {
+            var result = _httpClient.GetAsync(UrlBaseWcf + "Produto/Buscar/?Codigo=1");
         }
 
         //[Benchmark]
@@ -54,7 +60,7 @@ namespace BenchmarkWebApiWCF
             {
                 System.Console.ReadKey();
             }
-            
+
         }
     }
 
