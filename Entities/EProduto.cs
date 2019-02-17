@@ -1,10 +1,10 @@
-﻿namespace Entities
+﻿namespace Entidades
 {
-    public class EProduto
+    public class EProduto : ECategoria
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
-        public double Preco { get; set; }
+        public int CodigoProduto { get; set; }
+        public string NomeProduto { get; set; }
+        public string DescricaoProduto { get; set; }
+        public double PrecoProduto { get; set; }
     }
 }

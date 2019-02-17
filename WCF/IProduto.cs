@@ -1,10 +1,6 @@
-﻿using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using Entidades;
 using System.ServiceModel;
-using System.Text;
+using System.ServiceModel.Web;
 
 namespace WCF
 {
@@ -13,7 +9,23 @@ namespace WCF
     public interface IProduto
     {
         [OperationContract]
-        void Criar(EProduto produto);
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        EProduto Adicionar();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        EProduto Criar(EProduto produto);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET",  ResponseFormat = WebMessageFormat.Json)]
         EProduto Buscar(int codigo);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
+        double CalcularImposto(int codigo);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        bool Remover(int codigo);
     }
 }

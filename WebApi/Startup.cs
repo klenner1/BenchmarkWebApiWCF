@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace WebApi
 {
@@ -35,15 +36,15 @@ namespace WebApi
 
             //if (env.IsDevelopment())
             //{
-            //    app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             //}
             //else
             //{
             //    app.UseExceptionHandler("/Home/Error");
             //}
 
-         //   app.UseStaticFiles();
-         //   app.UseCookiePolicy();
+            //   app.UseStaticFiles();
+            //   app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {

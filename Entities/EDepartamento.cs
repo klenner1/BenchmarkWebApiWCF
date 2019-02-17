@@ -1,9 +1,9 @@
-﻿namespace Entities
+﻿namespace Entidades
 {
     public class EDepartamento
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
+        public int CodigoDepartamento { get; set; }
+        public string NomeDepartamento { get; set; }
+        public string DescricaoDepartamento { get; set; }
     }
 }
