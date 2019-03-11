@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public int AdicionarVarios(int count)
+        public bool AdicionarVarios(int count)
         {
             int codigo = ListaProdutos.Count + 1;
             for (int i = 0; i < count; i++)
@@ -30,9 +30,8 @@ namespace WebApi.Controllers
                 ListaProdutos.Add(produto);
                 codigo++;
             }
-            return codigo;
+            return true;
         }
-
 
         [HttpPost]
         public EProduto Criar([FromBody] EProduto produto)
@@ -42,61 +41,40 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public EProduto Atualizar([FromBody] EProduto produto)
+        public int CriarVarios([FromBody] List<EProduto> produtos)
+        {
+            ListaProdutos.AddRange(produtos);
+            return produtos.Count;
+        }
+
+        [HttpPost]
+        public bool Atualizar([FromBody] EProduto produto)
         {
             EProduto produtoAntigo = ListaProdutos.FirstOrDefault(x => x.CodigoProduto == produto.CodigoProduto);
             if (produtoAntigo == null)
             {
-                return null;
+                return false;
             }
             else
             {
-                if (produtoAntigo.NomeProduto != produto.NomeProduto)
-                {
-                    produtoAntigo.DescricaoProduto = produto.DescricaoProduto;
-                }
-                if (produtoAntigo.DescricaoProduto != produto.DescricaoProduto)
-                {
-                    produtoAntigo.DescricaoProduto = produto.DescricaoProduto;
-                }
-                if (produtoAntigo.PrecoProduto != produto.PrecoProduto)
-                {
-                    produtoAntigo.PrecoProduto = produto.PrecoProduto;
-                }
-
-                if (produtoAntigo.NomeDepartamento != produto.NomeDepartamento)
-                {
-                    produtoAntigo.NomeDepartamento = produto.NomeDepartamento;
-                }
-                if (produtoAntigo.DescricaoDepartamento != produto.DescricaoDepartamento)
-                {
-                    produtoAntigo.DescricaoDepartamento = produto.DescricaoDepartamento;
-                }
-
-                if (produtoAntigo.NomeCategoria != produto.NomeCategoria)
-                {
-                    produtoAntigo.NomeCategoria = produto.NomeCategoria;
-                }
-                if (produtoAntigo.DescricaoCategoria != produto.DescricaoCategoria)
-                {
-                    produtoAntigo.DescricaoCategoria = produto.DescricaoCategoria;
-                }
-
-                if (produtoAntigo.ImpostoMuniciopio != produto.ImpostoMuniciopio)
-                {
-                    produtoAntigo.ImpostoMuniciopio = produto.ImpostoMuniciopio;
-                }
-                if (produtoAntigo.ImpostoEstado != produto.ImpostoEstado)
-                {
-                    produtoAntigo.ImpostoEstado = produto.ImpostoEstado;
-                }
-                if (produtoAntigo.ImpostoUniao != produto.ImpostoUniao)
-                {
-                    produtoAntigo.ImpostoUniao = produto.ImpostoUniao;
-                }
-                return ListaProdutos.FirstOrDefault(x => x.CodigoProduto == produto.CodigoProduto);
+                AtualizarProduto(produto, produtoAntigo);
+                return true;
             }
         }
+
+        [HttpPost]
+        public int AtualizarTodos([FromBody] EProduto produto)
+        {
+            int count = 0;
+            for (int i = 0; i < ListaProdutos.Count; i++)
+            {
+                EProduto produtoAntigo = ListaProdutos.ElementAt(i);
+                AtualizarProduto(produto, produtoAntigo);
+                count++;
+            }
+            return count;
+        }
+
 
         [HttpPost]
         public EProduto CriarVazio()
@@ -160,6 +138,52 @@ namespace WebApi.Controllers
                 ImpostoMuniciopio = 0.009 * codigo
             };
             return produto;
+        }
+        private static void AtualizarProduto(EProduto produto, EProduto produtoAntigo)
+        {
+            if (produtoAntigo.NomeProduto != produto.NomeProduto)
+            {
+                produtoAntigo.DescricaoProduto = produto.DescricaoProduto;
+            }
+            if (produtoAntigo.DescricaoProduto != produto.DescricaoProduto)
+            {
+                produtoAntigo.DescricaoProduto = produto.DescricaoProduto;
+            }
+            if (produtoAntigo.PrecoProduto != produto.PrecoProduto)
+            {
+                produtoAntigo.PrecoProduto = produto.PrecoProduto;
+            }
+
+            if (produtoAntigo.NomeDepartamento != produto.NomeDepartamento)
+            {
+                produtoAntigo.NomeDepartamento = produto.NomeDepartamento;
+            }
+            if (produtoAntigo.DescricaoDepartamento != produto.DescricaoDepartamento)
+            {
+                produtoAntigo.DescricaoDepartamento = produto.DescricaoDepartamento;
+            }
+
+            if (produtoAntigo.NomeCategoria != produto.NomeCategoria)
+            {
+                produtoAntigo.NomeCategoria = produto.NomeCategoria;
+            }
+            if (produtoAntigo.DescricaoCategoria != produto.DescricaoCategoria)
+            {
+                produtoAntigo.DescricaoCategoria = produto.DescricaoCategoria;
+            }
+
+            if (produtoAntigo.ImpostoMuniciopio != produto.ImpostoMuniciopio)
+            {
+                produtoAntigo.ImpostoMuniciopio = produto.ImpostoMuniciopio;
+            }
+            if (produtoAntigo.ImpostoEstado != produto.ImpostoEstado)
+            {
+                produtoAntigo.ImpostoEstado = produto.ImpostoEstado;
+            }
+            if (produtoAntigo.ImpostoUniao != produto.ImpostoUniao)
+            {
+                produtoAntigo.ImpostoUniao = produto.ImpostoUniao;
+            }
         }
     }
 }

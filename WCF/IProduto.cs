@@ -11,34 +11,42 @@ namespace WCF
     {
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        EProduto Adicionar();
+        bool Adicionar();
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        int AdicionarVarios(int count);
+        bool AdicionarVarios(int count);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        EProduto Criar(EProduto produto);
+        bool Criar(EProduto produto);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        EProduto Atualizar(EProduto produto);
+        bool CriarVarios(List<EProduto> produtos);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
-        EProduto CriarVazio();
+        bool Atualizar(EProduto produto);
 
         [OperationContract]
-        [WebInvoke(Method = "GET",  ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        bool AtualizarTodos(EProduto produto);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        bool CriarVazio();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
         EProduto Buscar(int codigo);
 
         [OperationContract]
-        [WebInvoke(Method = "GET",  ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
         int Count();
 
         [OperationContract]
-        [WebInvoke(Method = "GET",  ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
         List<EProduto> BuscarTodos();
 
         [OperationContract]
