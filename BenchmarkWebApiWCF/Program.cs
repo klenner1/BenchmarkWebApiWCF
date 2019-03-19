@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
+using Entidades;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -256,7 +257,7 @@ namespace BenchmarkWebApiWCF
     [MemoryDiagnoser]
     public class BenchmarkAtualizar
     {
-        private static HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly static string UrlBaseWcf = "http://localhost:58270/";
         private readonly static string UrlBaseWebApi = "http://localhost:5000/";
 
@@ -266,6 +267,7 @@ namespace BenchmarkWebApiWCF
         public int CodigoWebApiAtualizarTodos { get; set; } = 1;
         [Params(1,100,1000,10000,100000, 500000, 1000000)]
         public int RegistrosIniciais { get; set; }
+
 
         public BenchmarkAtualizar()
         {
@@ -292,39 +294,62 @@ namespace BenchmarkWebApiWCF
             HttpResponseMessage core = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/AdicionarVarios/", contentString).Result;
         }
 
+        [IterationSetup]
+        public void CriarProduto()
+        {
+            var codigoCore = CodigoWebAtualizar;
+            ProdutoCore = new EProduto
+            {
+                CodigoProduto = codigoCore,
+                NomeProduto = "Produto N" + codigoCore,
+                DescricaoProduto = "Modificado",
+                PrecoProduto = codigoCore * Math.PI * 2,
+
+                CodigoCategoria = codigoCore % 9,
+                NomeCategoria = "Categoria N" + (codigoCore % 9) + "Modificado",
+                DescricaoCategoria = "Categoria N" + (codigoCore % 9) + " Descrição Modificado",
+
+                CodigoDepartamento = codigoCore % 10,
+                NomeDepartamento = "Departamento N" + (codigoCore % 9),
+                DescricaoDepartamento = "Departamento N" + (codigoCore % 9) + " Descrição Modificado",
+
+                ImpostoUniao = 0.34 * codigoCore * 2,
+                ImpostoEstado = 0.09 * codigoCore * 2,
+                ImpostoMuniciopio = 0.009 * codigoCore * 2
+            };
+
+            var codigoWCF = CodigoWCFAtualizar;
+            ProdutoWCF = new
+            {
+                produto = new EProduto
+                {
+                    CodigoProduto = codigoWCF,
+                    NomeProduto = "Produto N" + codigoWCF,
+                    DescricaoProduto = "Modificado",
+                    PrecoProduto = codigoWCF * Math.PI * 2,
+
+                    CodigoCategoria = codigoWCF % 9,
+                    NomeCategoria = "Categoria N" + (codigoWCF % 9) + "Modificado",
+                    DescricaoCategoria = "Categoria N" + (codigoWCF % 9) + " Descrição Modificado",
+
+                    CodigoDepartamento = codigoWCF % 10,
+                    NomeDepartamento = "Departamento N" + (codigoWCF % 9),
+                    DescricaoDepartamento = "Departamento N" + (codigoWCF % 9) + " Descrição Modificado",
+
+                    ImpostoUniao = 0.34 * codigoWCF * 2,
+                    ImpostoEstado = 0.09 * codigoWCF * 2,
+                    ImpostoMuniciopio = 0.009 * codigoWCF * 2
+                }
+            };
+        }
+
         [Benchmark]
         public string WCF_Post_Atualizar()
         {
-            var codigo = CodigoWCFAtualizar;
-            var parametro = new
-            {
-                produto = new
-                {
-                    CodigoProduto = codigo,
-                    NomeProduto = "Produto N" + codigo,
-                    DescricaoProduto = "Modificado",
-                    PrecoProduto = codigo * Math.PI * 2,
-
-                    CodigoCategoria = codigo % 9,
-                    NomeCategoria = "Categoria N" + (codigo % 9) + "Modificado",
-                    DescricaoCategoria = "Categoria N" + (codigo % 9) + " Descrição Modificado",
-
-                    CodigoDepartamento = codigo % 10,
-                    NomeDepartamento = "Departamento N" + (codigo % 9),
-                    DescricaoDepartamento = "Departamento N" + (codigo % 9) + " Descrição Modificado",
-
-                    ImpostoUniao = 0.34 * codigo * 2,
-                    ImpostoEstado = 0.09 * codigo * 2,
-                    ImpostoMuniciopio = 0.009 * codigo * 2
-                }
-            };
-
-            var jsonContent = JsonConvert.SerializeObject(parametro);
+            var jsonContent = JsonConvert.SerializeObject(ProdutoWCF);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
             HttpResponseMessage r1 = _httpClient.PostAsync(UrlBaseWcf + "Produto.svc/produto/Atualizar?", contentString).Result;
-
             HttpContent stream = r1.Content;
             string retorno = stream.ReadAsStringAsync().Result;
             CodigoWCFAtualizar++;
@@ -334,33 +359,10 @@ namespace BenchmarkWebApiWCF
         [Benchmark]
         public string WebApi_Post_Atualizar()
         {
-            var codigo = CodigoWebAtualizar;
-            var parametro = new
-            {
-                CodigoProduto = codigo,
-                NomeProduto = "Produto N" + codigo + "Modificado",
-                DescricaoProduto = "Modificado",
-                PrecoProduto = codigo * Math.PI * 2,
-
-                CodigoCategoria = codigo % 9,
-                NomeCategoria = "Categoria N" + (codigo % 9) + "Modificado",
-                DescricaoCategoria = "Categoria N" + (codigo % 9) + " Descrição  Modificado",
-
-                CodigoDepartamento = codigo % 10,
-                NomeDepartamento = "Departamento N" + (codigo % 9) + "Modificado",
-                DescricaoDepartamento = "Departamento N" + (codigo % 9) + " Descrição  Modificado",
-
-                ImpostoUniao = 0.34 * codigo * 2,
-                ImpostoEstado = 0.09 * codigo * 2,
-                ImpostoMuniciopio = 0.009 * codigo * 2
-
-            };
-            var jsonContent = JsonConvert.SerializeObject(parametro);
+            var jsonContent = JsonConvert.SerializeObject(ProdutoCore);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
             HttpResponseMessage r1 = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/Atualizar/", contentString).Result;
-
             HttpContent stream = r1.Content;
             string retorno = stream.ReadAsStringAsync().Result;
             CodigoWebAtualizar++;
@@ -369,31 +371,7 @@ namespace BenchmarkWebApiWCF
         [Benchmark]
         public string WCF_Post_Atualizar_Todos()
         {
-            var codigo = CodigoWCFAtualizarTodos;
-            var parametro = new
-            {
-                produto = new
-                {
-                    CodigoProduto = codigo,
-                    NomeProduto = "Produto N" + codigo,
-                    DescricaoProduto = "Modificado",
-                    PrecoProduto = codigo * Math.PI * 2,
-
-                    CodigoCategoria = codigo % 9,
-                    NomeCategoria = "Categoria N" + (codigo % 9) + "Modificado",
-                    DescricaoCategoria = "Categoria N" + (codigo % 9) + " Descrição Modificado",
-
-                    CodigoDepartamento = codigo % 10,
-                    NomeDepartamento = "Departamento N" + (codigo % 9),
-                    DescricaoDepartamento = "Departamento N" + (codigo % 9) + " Descrição Modificado",
-
-                    ImpostoUniao = 0.34 * codigo * 2,
-                    ImpostoEstado = 0.09 * codigo * 2,
-                    ImpostoMuniciopio = 0.009 * codigo * 2
-                }
-            };
-
-            var jsonContent = JsonConvert.SerializeObject(parametro);
+            var jsonContent = JsonConvert.SerializeObject(ProdutoWCF);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -408,33 +386,10 @@ namespace BenchmarkWebApiWCF
         [Benchmark]
         public string WebApi_Post_Atualizar_Todos()
         {
-            var codigo = CodigoWebApiAtualizarTodos;
-            var parametro = new
-            {
-                CodigoProduto = codigo,
-                NomeProduto = "Produto N" + codigo + "Modificado",
-                DescricaoProduto = "Modificado",
-                PrecoProduto = codigo * Math.PI * 2,
-
-                CodigoCategoria = codigo % 9,
-                NomeCategoria = "Categoria N" + (codigo % 9) + "Modificado",
-                DescricaoCategoria = "Categoria N" + (codigo % 9) + " Descrição  Modificado",
-
-                CodigoDepartamento = codigo % 10,
-                NomeDepartamento = "Departamento N" + (codigo % 9) + "Modificado",
-                DescricaoDepartamento = "Departamento N" + (codigo % 9) + " Descrição  Modificado",
-
-                ImpostoUniao = 0.34 * codigo * 2,
-                ImpostoEstado = 0.09 * codigo * 2,
-                ImpostoMuniciopio = 0.009 * codigo * 2
-
-            };
-            var jsonContent = JsonConvert.SerializeObject(parametro);
+            var jsonContent = JsonConvert.SerializeObject(ProdutoCore);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
             HttpResponseMessage r1 = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/AtualizarTodos/", contentString).Result;
-
             HttpContent stream = r1.Content;
             string retorno = stream.ReadAsStringAsync().Result;
             CodigoWebApiAtualizarTodos++;
@@ -449,8 +404,6 @@ namespace BenchmarkWebApiWCF
         }
 
     }
-
-
 
     public class Program
     {
