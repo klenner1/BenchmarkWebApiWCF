@@ -56,5 +56,9 @@ namespace WCF
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
         bool Remover(int codigo);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json)]
+        bool RemoverTodos();
     }
 }

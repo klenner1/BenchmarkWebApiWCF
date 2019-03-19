@@ -16,9 +16,9 @@ namespace BenchmarkWebApiWCF
         private static HttpClient _httpClient;
         private readonly static string UrlBaseWcf = "http://localhost:58270/";
         private readonly static string UrlBaseWebApi = "http://localhost:5000/";
-        
+
         public int CodigoWCFPost = 1;
-        public int CodigoWebApiPost  = 1;
+        public int CodigoWebApiPost = 1;
 
         public List<Object> listaObjetos = new List<object>();
 
@@ -184,6 +184,7 @@ namespace BenchmarkWebApiWCF
 
         public int CodigoWCFGet { get; set; } = 1;
         public int CodigoWebApiGet { get; set; } = 1;
+        public int RegistrosIniciais { get; set; } = 9999;
 
         public BenchmarkPostGet()
         {
@@ -196,14 +197,17 @@ namespace BenchmarkWebApiWCF
 
             var parametro = new
             {
-                Count = 9999
+                Count = RegistrosIniciais
             };
 
             var jsonContent = JsonConvert.SerializeObject(parametro);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
             HttpResponseMessage wcf = _httpClient.PostAsync(UrlBaseWcf + "Produto.svc/produto/AdicionarVarios?", contentString).Result;
+
+            jsonContent = JsonConvert.SerializeObject(RegistrosIniciais);
+            contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage core = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/AdicionarVarios/", contentString).Result;
         }
 
@@ -241,6 +245,12 @@ namespace BenchmarkWebApiWCF
             HttpContent stream2 = r2.Content;
             return stream2.ReadAsStringAsync().Result;
         }
+        [GlobalCleanup]
+        public void GlobalCleanup()
+        {
+            HttpResponseMessage core = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/RemoverTodos/", null).Result;
+            HttpResponseMessage wcf = _httpClient.PostAsync(UrlBaseWcf + "Produto.svc/produto/RemoverTodos?", null).Result;
+        }
     }
 
     [MemoryDiagnoser]
@@ -249,11 +259,13 @@ namespace BenchmarkWebApiWCF
         private static HttpClient _httpClient;
         private readonly static string UrlBaseWcf = "http://localhost:58270/";
         private readonly static string UrlBaseWebApi = "http://localhost:5000/";
-        
+
         public int CodigoWCFAtualizar { get; set; } = 1;
         public int CodigoWebAtualizar { get; set; } = 1;
         public int CodigoWCFAtualizarTodos { get; set; } = 1;
         public int CodigoWebApiAtualizarTodos { get; set; } = 1;
+        [Params(1,100,1000,10000,100000, 500000, 1000000)]
+        public int RegistrosIniciais { get; set; }
 
         public BenchmarkAtualizar()
         {
@@ -263,17 +275,20 @@ namespace BenchmarkWebApiWCF
         [GlobalSetup]
         public void PreencherListas()
         {
-
+            Console.WriteLine(RegistrosIniciais);
             var parametro = new
             {
-                Count = 99999
+                count = RegistrosIniciais
             };
 
             var jsonContent = JsonConvert.SerializeObject(parametro);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
             HttpResponseMessage wcf = _httpClient.PostAsync(UrlBaseWcf + "Produto.svc/produto/AdicionarVarios?", contentString).Result;
+
+            jsonContent = JsonConvert.SerializeObject(RegistrosIniciais);
+            contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage core = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/AdicionarVarios/", contentString).Result;
         }
 
@@ -312,7 +327,6 @@ namespace BenchmarkWebApiWCF
 
             HttpContent stream = r1.Content;
             string retorno = stream.ReadAsStringAsync().Result;
-            Console.WriteLine(retorno);
             CodigoWCFAtualizar++;
             return retorno;
         }
@@ -349,7 +363,6 @@ namespace BenchmarkWebApiWCF
 
             HttpContent stream = r1.Content;
             string retorno = stream.ReadAsStringAsync().Result;
-            Console.WriteLine(retorno);
             CodigoWebAtualizar++;
             return retorno;
         }
@@ -428,6 +441,13 @@ namespace BenchmarkWebApiWCF
             return retorno;
         }
 
+        [GlobalCleanup]
+        public void GlobalCleanup()
+        {
+            HttpResponseMessage core = _httpClient.PostAsync(UrlBaseWebApi + "api/produto/RemoverTodos/", null).Result;
+            HttpResponseMessage wcf = _httpClient.PostAsync(UrlBaseWcf + "Produto.svc/produto/RemoverTodos?", null).Result;
+        }
+
     }
 
 
@@ -438,22 +458,7 @@ namespace BenchmarkWebApiWCF
         {
             try
             {
-                Console.WriteLine("1 : BenchmarkPost");
-                Console.WriteLine("2 : BenchmarkPostGet");
-                Console.WriteLine("3 : BenchmarkAtualizar");
-                int opcao = int.Parse(Console.ReadLine());
-                if (opcao == 1)
-                {
-                    var summary = BenchmarkRunner.Run<BenchmarkPost>();
-                }
-                else if(opcao == 2)
-                {
-                    var summary = BenchmarkRunner.Run<BenchmarkPostGet>();
-                }
-                else if (opcao == 3)
-                {
-                    var summary = BenchmarkRunner.Run<BenchmarkAtualizar>();
-                } 
+                Escolher();
             }
             finally
             {
@@ -462,7 +467,33 @@ namespace BenchmarkWebApiWCF
 
         }
 
-
+        private static void Escolher()
+        {
+            Console.WriteLine("1 : BenchmarkPost");
+            Console.WriteLine("2 : BenchmarkPostGet");
+            Console.WriteLine("3 : BenchmarkAtualizar");
+            int opcao = int.Parse(Console.ReadLine());
+            if (opcao == 1)
+            {
+                var summary = BenchmarkRunner.Run<BenchmarkPost>();
+            }
+            else if (opcao == 2)
+            {
+                var summary = BenchmarkRunner.Run<BenchmarkPostGet>();
+            }
+            else if (opcao == 3)
+            {
+                var summary = BenchmarkRunner.Run<BenchmarkAtualizar>();
+            }
+            else
+            {
+                new BenchmarkAtualizar().GlobalCleanup();
+            }
+            if (opcao != 0)
+            {
+                Escolher();
+            }
+        }
 
     }
 

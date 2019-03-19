@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public bool AdicionarVarios(int count)
+        public bool AdicionarVarios([FromBody] int count)
         {
             int codigo = ListaProdutos.Count + 1;
             for (int i = 0; i < count; i++)
@@ -109,11 +109,18 @@ namespace WebApi.Controllers
             return imposto;
         }
 
-        [HttpDelete]
+        [HttpPost]
         public bool Remover(int codigo)
         {
             EProduto produto = ListaProdutos.FirstOrDefault(x => x.CodigoProduto == codigo);
             return ListaProdutos.Remove(produto);
+        }
+
+        [HttpPost]
+        public bool RemoverTodos()
+        {
+            ListaProdutos.Clear();
+            return true;
         }
 
         private static EProduto CriarObjProduto(int codigo)

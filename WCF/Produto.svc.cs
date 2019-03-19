@@ -106,6 +106,12 @@ namespace WCF
             return ListaProdutos.Remove(produto);
         }
 
+        public bool RemoverTodos()
+        {
+            ListaProdutos.Clear();
+            return true;
+        }
+
         private static EProduto CriarObjProduto(int codigo)
         {
             return new EProduto()
