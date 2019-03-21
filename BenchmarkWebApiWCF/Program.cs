@@ -265,9 +265,10 @@ namespace BenchmarkWebApiWCF
         public int CodigoWebAtualizar { get; set; } = 1;
         public int CodigoWCFAtualizarTodos { get; set; } = 1;
         public int CodigoWebApiAtualizarTodos { get; set; } = 1;
-        [Params(1,100,1000,10000,100000, 500000, 1000000)]
+        [Params(1,100,1000,10000,100000, 500000, 1000000, 5000000)]
         public int RegistrosIniciais { get; set; }
-
+        private EProduto ProdutoCore;
+        private object ProdutoWCF;
 
         public BenchmarkAtualizar()
         {
