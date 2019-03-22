@@ -31,21 +31,21 @@ namespace WebApi
 
         }
 
+        //    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        //WebHost.CreateDefaultBuilder(args)
+        //    .UseStartup<Startup>()
+        //    .ConfigureKestrel((context, options) =>
+        //    {
+        //        // Set properties and call methods on options
+        //    });
+
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-    WebHost.CreateDefaultBuilder(args)
-        .UseStartup<Startup>()
-        .ConfigureKestrel((context, options) =>
-        {
-            // Set properties and call methods on options
-        });
+            WebHost.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
 
-        //public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        //    WebHost.CreateDefaultBuilder(args)
-        //        .ConfigureLogging(logging =>
-        //        {
-        //            logging.ClearProviders();
-
-        //        })
-        //        .UseStartup<Startup>();
+                })
+                .UseStartup<Startup>();
     }
 }
