@@ -14,30 +14,16 @@ namespace WebApi
     {
         public static void Main(string[] args)
         {
-        //    var host = new WebHostBuilder()
-        //.UseContentRoot(Directory.GetCurrentDirectory())
-        //.UseKestrel()
-        //.UseIISIntegration()
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        //public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        //WebHost.CreateDefaultBuilder(args)
         //.UseStartup<Startup>()
         //.ConfigureKestrel((context, options) =>
         //{
-
-
-        //}).Build();
-
-        //    host.Run();
-
-             CreateWebHostBuilder(args).Build().Run();
-
-        }
-
-        //    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        //WebHost.CreateDefaultBuilder(args)
-        //    .UseStartup<Startup>()
-        //    .ConfigureKestrel((context, options) =>
-        //    {
-        //        // Set properties and call methods on options
-        //    });
+        //    // Set properties and call methods on options
+        //});
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
@@ -47,5 +33,6 @@ namespace WebApi
 
                 })
                 .UseStartup<Startup>();
+
     }
 }
