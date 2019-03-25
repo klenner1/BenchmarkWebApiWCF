@@ -12,19 +12,19 @@ namespace WebApi.Controllers
         static List<EProduto> ListaProdutos { get; set; } = new List<EProduto>();
 
         [HttpPost]
-        public EProduto Adicionar()
+        public bool Adicionar()
         {
             int codigo = ListaProdutos.Count + 1;
             EProduto produto = CriarObjProduto(codigo);
             ListaProdutos.Add(produto);
-            return produto;
+            return true;
         }
 
-        [HttpPost]
-        public bool AdicionarVarios([FromBody] int count)
+        [HttpPost] 
+        public bool AdicionarVarios([FromBody]int tamanho)
         {
             int codigo = ListaProdutos.Count + 1;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < tamanho; i++)
             {
                 EProduto produto = CriarObjProduto(codigo);
                 ListaProdutos.Add(produto);
@@ -34,17 +34,17 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public EProduto Criar([FromBody] EProduto produto)
+        public bool Criar([FromBody] EProduto produto)
         {
             ListaProdutos.Add(produto);
-            return produto;
+            return true;
         }
 
         [HttpPost]
-        public int CriarVarios([FromBody] List<EProduto> produtos)
+        public bool CriarVarios([FromBody] List<EProduto> produtos)
         {
             ListaProdutos.AddRange(produtos);
-            return produtos.Count;
+            return true;
         }
 
         [HttpPost]
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public int AtualizarTodos([FromBody] EProduto produto)
+        public bool AtualizarTodos([FromBody] EProduto produto)
         {
             int count = 0;
             for (int i = 0; i < ListaProdutos.Count; i++)
@@ -72,16 +72,16 @@ namespace WebApi.Controllers
                 AtualizarProduto(produto, produtoAntigo);
                 count++;
             }
-            return count;
+            return true;
         }
 
 
         [HttpPost]
-        public EProduto CriarVazio()
+        public bool CriarVazio()
         {
             EProduto produto = new EProduto();
             ListaProdutos.Add(produto);
-            return produto;
+            return true;
         }
 
         [HttpGet("{codigo}")]

@@ -35,7 +35,7 @@ namespace WCF
                 codigo++;
             }
 
-            return true;
+            return count>0;
         }
 
         public bool Criar(EProduto produto)
