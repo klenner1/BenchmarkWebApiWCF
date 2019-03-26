@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using Entidades;
+using MessagePack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -291,10 +292,16 @@ namespace BenchmarkWebApiWCF
                 ImpostoMuniciopio = 0.009 * codigo
             };
         }
+        public static string MessagePackToJson(object obj)
+        {
+            var bytes = MessagePackSerializer.Serialize(obj);
+            return MessagePackSerializer.ToJson(bytes);
+        }
 
         public static string RequisicaoPost(HttpClient httpClient, string url, object obj)
         {
-            var jsonContent = JsonConvert.SerializeObject(obj);
+            //var jsonContent = JsonConvert.SerializeObject(obj);
+            var jsonContent = MessagePackToJson(obj);
             var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage r1 = httpClient.PostAsync(url, contentString).Result;
