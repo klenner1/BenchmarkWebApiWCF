@@ -20,6 +20,7 @@ namespace WebApi
         //public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
         //WebHost.CreateDefaultBuilder(args)
         //.UseStartup<Startup>()
+        //    .UseKestrel()
         //.ConfigureKestrel((context, options) =>
         //{
         //    // Set properties and call methods on options
