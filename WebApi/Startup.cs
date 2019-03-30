@@ -29,13 +29,16 @@ namespace WebApi
             //});
 
 
-            services.AddMvc().AddMvcOptions(option =>
-            {
-                option.OutputFormatters.Clear();
-                option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
-                option.InputFormatters.Clear();
-                option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // Ultilizado em testes com MessagePack
+            //services.AddMvc().AddMvcOptions(option =>
+            //{
+            //    option.OutputFormatters.Clear();
+            //    option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
+            //    option.InputFormatters.Clear();
+            //    option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
+            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
         }
 

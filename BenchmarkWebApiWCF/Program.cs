@@ -261,7 +261,6 @@ namespace BenchmarkWebApiWCF
 
     public static class Utils
     {
-
         public readonly static string UrlBaseWcf = "http://localhost/WCF/";
         public readonly static string UrlBaseWebApi = "http://localhost:5000/";
 
@@ -292,17 +291,20 @@ namespace BenchmarkWebApiWCF
                 ImpostoMuniciopio = 0.009 * codigo
             };
         }
-        public static string MessagePackToJson(object obj)
+        //Ultilizado em testes com MessagePack
+        public static string RequisicaoPostMP(HttpClient httpClient, string url, object obj)
         {
-            var bytes = MessagePackSerializer.Serialize(obj);
-            return MessagePackSerializer.ToJson(bytes);
+            var buffer = MessagePackSerializer.Serialize(obj);
+            var byteContent = new ByteArrayContent(buffer);
+            HttpResponseMessage r1 = httpClient.PostAsync(url, byteContent).Result;
+            HttpContent stream = r1.Content;
+            return stream.ReadAsStringAsync().Result;
         }
 
         public static string RequisicaoPost(HttpClient httpClient, string url, object obj)
         {
-            //var jsonContent = JsonConvert.SerializeObject(obj);
-            var jsonContent = MessagePackToJson(obj);
-            var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var jsonContent = JsonConvert.SerializeObject(obj);
+            var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/x-msgpack");
             contentString.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage r1 = httpClient.PostAsync(url, contentString).Result;
             HttpContent stream = r1.Content;
@@ -357,14 +359,15 @@ namespace BenchmarkWebApiWCF
             else
             {
                 //outras opção para testes
-                var b = new BenchmarkGet();
-                b.RegistrosIniciais = 10;
+                var b = new BenchmarkPostLista();
+                //b.RegistrosIniciais = 10;
+                b.TamanhoLista = 10000;
                 b.GlobalSetup();
                 //Console.WriteLine(b.WCF_Post_Sem_Parametro_vazio());
                 //Console.WriteLine(b.WCF_Post_Sem_Parametro());
                 //Console.WriteLine(b.WCF_Post_Parametro());
-                Console.WriteLine(b.Wcf_Get_Produto_All());
-                Console.WriteLine(b.WebApi_Get_Produto());
+                //Console.WriteLine(b.Wcf_Get_Produto_All());
+                Console.WriteLine(b.WebApi_Post_Lista());
             }
             if (opcao != 0)
             {
