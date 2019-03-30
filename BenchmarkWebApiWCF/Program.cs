@@ -40,7 +40,7 @@ namespace BenchmarkWebApiWCF
             ProdutoWCF = new { produto = Utils.CriarObjProduto(codigoWCF) };
         }
 
-       // [Benchmark]
+        [Benchmark]
         public string WCF_Post_Sem_Parametro_vazio()
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWcf + "Produto.svc/produto/CriarVazio?", null);
@@ -52,7 +52,7 @@ namespace BenchmarkWebApiWCF
             return Utils.RequisicaoPost(_httpClient, UrlBaseWebApi + "api/produto/CriarVazio/", null);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string WCF_Post_Sem_Parametro()
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWcf + "Produto.svc/produto/Adicionar?", null);
@@ -64,7 +64,7 @@ namespace BenchmarkWebApiWCF
             return Utils.RequisicaoPost(_httpClient, UrlBaseWebApi + "api/produto/Adicionar/", null);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string WCF_Post_Parametro()
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWcf + "Produto.svc/produto/Criar?", ProdutoWCF);
@@ -110,7 +110,7 @@ namespace BenchmarkWebApiWCF
                 listaObjetos.Add(Utils.CriarObjProduto(i));
             }
         }
-        //[Benchmark]
+        [Benchmark]
         public string WCF_Post_Lista()
         {
             var parametro = new { produtos = listaObjetos };
@@ -157,7 +157,7 @@ namespace BenchmarkWebApiWCF
             Utils.RequisicaoPost(_httpClient, UrlBaseWebApi + "api/produto/AdicionarVarios/", RegistrosIniciais);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string Wcf_Get_Produto()
         {
             return Utils.RequisicaoGet(_httpClient, UrlBaseWcf + "Produto.svc/produto/Buscar?codigo=" + CodigoWCFGet);
@@ -168,7 +168,7 @@ namespace BenchmarkWebApiWCF
         {
             return Utils.RequisicaoGet(_httpClient, UrlBaseWebApi + "api/Produto/Buscar/" + CodigoWebApiGet);
         }
-        //[Benchmark]
+        [Benchmark]
         public string Wcf_Get_Produto_All()
         {
             return Utils.RequisicaoGet(_httpClient, UrlBaseWcf + "Produto.svc/produto/BuscarTodos");
@@ -228,7 +228,7 @@ namespace BenchmarkWebApiWCF
             ProdutoWCF = new { produto = Utils.CriarObjProduto(codigoWCF) };
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string WCF_Post_Atualizar()
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWcf + "Produto.svc/produto/Atualizar?", ProdutoWCF);
@@ -239,7 +239,7 @@ namespace BenchmarkWebApiWCF
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWebApi + "api/produto/Atualizar/", ProdutoCore);
         }
-        //[Benchmark]
+        [Benchmark]
         public string WCF_Post_Atualizar_Todos()
         {
             return Utils.RequisicaoPost(_httpClient, UrlBaseWcf + "Produto.svc/produto/AtualizarTodos?", ProdutoWCF);
